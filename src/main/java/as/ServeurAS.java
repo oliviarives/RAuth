@@ -81,6 +81,7 @@ public class ServeurAS {
 
         } catch (IOException e) {
             System.out.println(CmdServ.ERROR.name() + " socket serveur : " + e.getMessage());
+        //il faudra l'enlever le finally c'est pour le test
         } finally {
             if (sockEcoute != null) sockEcoute.close();
         }
