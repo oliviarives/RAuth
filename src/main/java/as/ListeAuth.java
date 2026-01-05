@@ -31,7 +31,7 @@ public class ListeAuth {
      * création d'un couple (login, mot de passe)
      * @param login : le login
      * @param passwd : le mot de passe
-     * @return true si Ã§a c'est bien passÃ©
+     * @return true si ça c'est bien passé
      */
     public synchronized boolean creer(String login, String passwd) {
         if(authEntries.containsKey(login))
@@ -44,7 +44,7 @@ public class ListeAuth {
      *  mise à jour d'un couple (login, mot de passe)
      * @param login : le login
      * @param passwd : le mot de passe
-     * @return true si Ã§a c'est bien passÃ©
+     * @return true si ça c'est bien passé
      */
     public synchronized boolean mettreAJour(String login, String passwd) {
         if(!authEntries.containsKey(login))
@@ -57,7 +57,7 @@ public class ListeAuth {
      *  suppression d'un couple (login, mot de passe)
      * @param login : le login
      * @param passwd : le mot de passe
-     * @return true si Ã§a c'est bien passÃ©
+     * @return true si ça c'est bien passé
      */
 
     public synchronized boolean supprimer(String login, String passwd) {
@@ -71,7 +71,7 @@ public class ListeAuth {
      *  test d'un couple (login, mot de passe)
      * @param login : le login
      * @param passwd : le mot de passe
-     * @return true si Ã§a c'est bien passÃ©
+     * @return true si ça c'est bien passé
      */
     public synchronized boolean tester(String login, String passwd) {
         if(!authEntries.containsKey(login))
