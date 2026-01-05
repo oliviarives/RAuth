@@ -1,5 +1,8 @@
 package clients;
 
+import cmd.CmdClient;
+import cmd.CmdServ;
+
 import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
@@ -40,7 +43,7 @@ public class ClientCheckerTCP {
             sock.close();
 
         } catch (IOException e) {
-            System.out.println("Erreur client : " + e.getMessage());
+            System.out.println(CmdServ.BAD.name() + " client : " + e.getMessage());
         }
     }
 }

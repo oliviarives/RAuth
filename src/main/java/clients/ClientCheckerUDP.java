@@ -43,7 +43,7 @@ public class ClientCheckerUDP {
             if (CmdServ.GOOD.name().equals(reponseTexte)) {
                 System.out.println("SERVEUR UDP : " + CmdServ.GOOD.name());
             } else {
-                System.out.println("SERVEUR UDP : "+ CmdServ.ERROR.name());
+                System.out.println("SERVEUR UDP : "+ CmdServ.BAD.name());
             }
 
             socket.close();
