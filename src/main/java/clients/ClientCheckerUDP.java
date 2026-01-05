@@ -14,36 +14,36 @@ public class ClientCheckerUDP {
         System.out.println("--- Client UDP Checker ---");
 
         try {
-            DatagramSocket socket = new DatagramSocket(); // Pas de port précis pour le client
+            DatagramSocket socket = new DatagramSocket();
 
-            // 1. Saisie
             System.out.print("Login : ");
             String login = sc.nextLine();
             System.out.print("Password : ");
             String pass = sc.nextLine();
 
-            // 2. Construction du message "login;password"
+            // Concaténation du login et du password avec un ';' pour effectuer
+            // La séparation dans la classe ServerCheckerUDP
             String message = login + ";" + pass;
             byte[] data = message.getBytes();
 
-            // 3. Envoi du paquet
+            // Envoi du paquet
             InetAddress adresseServeur = InetAddress.getByName(hote);
             DatagramPacket paquetEnvoi = new DatagramPacket(data, data.length, adresseServeur, port);
             socket.send(paquetEnvoi);
 
-            // 4. Attente de la réponse
+            // Attente de la réponse
             byte[] bufferReponse = new byte[1024];
             DatagramPacket paquetRecu = new DatagramPacket(bufferReponse, bufferReponse.length);
 
-            socket.receive(paquetRecu); // Bloquant
+            socket.receive(paquetRecu);
 
-            // 5. Analyse de la réponse
+            // Analyse de la réponse
             String reponseTexte = new String(paquetRecu.getData(), 0, paquetRecu.getLength());
 
             if (CmdServ.GOOD.name().equals(reponseTexte)) {
-                System.out.println("SERVEUR : Authentification RÉUSSIE !");
+                System.out.println("SERVEUR UDP : " + CmdServ.GOOD.name());
             } else {
-                System.out.println("SERVEUR : Échec (ou erreur).");
+                System.out.println("SERVEUR UDP : "+ CmdServ.ERROR.name());
             }
 
             socket.close();

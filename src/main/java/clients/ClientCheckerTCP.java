@@ -14,7 +14,7 @@ public class ClientCheckerTCP {
         Scanner sc = new Scanner(System.in);
 
         try {
-            System.out.println("Client Checker");
+            System.out.println("--- Client TCP Checker ---");
             System.out.print("Login : ");
             String login = sc.nextLine();
 

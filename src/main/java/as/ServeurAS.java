@@ -13,6 +13,9 @@ import java.net.Socket;
 public class ServeurAS {
 
     public static void main(String[] args) {
+        // Le port imposé par le sujet
+        int port = 28414;
+
         // On implémente la logique métier qui est donc la
         // Préparation de la bd en mémoire
         ListeAuth listeAuth = new ListeAuth();
@@ -22,9 +25,9 @@ public class ServeurAS {
         /*ServerSocket sockEcoute;
 
         try {
-            // Étape 1 : Port 28414 (de la Q2)
-            sockEcoute = new ServerSocket(28414);
-            System.out.println("Serveur AS (TCP) en attente sur 28414...");
+            // Étape 1 : Port 28414
+            sockEcoute = new ServerSocket(port);
+            System.out.println("Serveur AS (TCP) en attente sur le port " + port);
 
             // Étape 2
             Socket sockService;
@@ -37,7 +40,7 @@ public class ServeurAS {
                     System.out.println("Client TCP connecté.");
 
                     // On appelle notre classe ServiceCheckerTCP
-                    // Pour ne pas traiter le traiter ici. Uniquement dans notre classe spécalisé
+                    // Pour ne pas le traiter ici on utilise notre classe spécalisé
                     ServiceCheckerTCP service = new ServiceCheckerTCP(sockService, listeAuth);
                     service.traiter();
 
@@ -52,8 +55,6 @@ public class ServeurAS {
     }*/
 
         //Partie UDP - Q3
-        // Le port imposé par le sujet
-        int port = 28414;
 
         // Déclaration du socket datagramme
         DatagramSocket sockEcoute = null;
@@ -64,24 +65,22 @@ public class ServeurAS {
             System.out.println("Serveur AS (UDP) en attente sur le port " + port);
 
             // Préparation du tampon (buffer) pour recevoir les données
-            // Le cours utilise new byte[256], on met 1024 pour être large
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[256];
 
             while (true) {
-                // Création d'un paquet vide prêt à être rempli
+                // On créé un paquet vide prêt à être rempli
                 DatagramPacket paquetRecu = new DatagramPacket(buffer, buffer.length);
 
-                // Attente bloquante d'un message
+                // BLOQUANT : on attend un message
                 sockEcoute.receive(paquetRecu);
 
-                // Dès qu'on reçoit quelque chose, on délègue au Service
+                // On appelle notre classe spécialisé ServiceCheckerUDP
                 ServiceCheckerUDP service = new ServiceCheckerUDP(sockEcoute, listeAuth);
                 service.traiter(paquetRecu);
             }
 
         } catch (IOException e) {
             System.out.println(CmdServ.ERROR.name() + " socket serveur : " + e.getMessage());
-        //il faudra l'enlever le finally c'est pour le test
         } finally {
             if (sockEcoute != null) sockEcoute.close();
         }

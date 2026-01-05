@@ -39,13 +39,13 @@ public class ServiceCheckerTCP {
 
             // Retour de la réponse au client
             if (resultat) {
-                // La méthode name() permet de convertir notre enum en String
+                // La méthode name() permet de cast notre enum en String
                 outsocket.println(CmdServ.GOOD.name());
             } else {
                 outsocket.println(CmdServ.BAD.name());
             }
 
-            // Clôture de communication avec ce client spécifique
+            // Clôture de communication avec ce client TCP
             sockService.close();
 
         } catch (IOException io) {
