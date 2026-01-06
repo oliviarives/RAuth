@@ -20,35 +20,38 @@ public class ServiceCheckerUDP {
 
     public void traiter(DatagramPacket paquetRecu) {
         try {
-            // --- ETAPE 1 : EXTRACTION DES DONNEES (Comme le cours) ---
-            // Attention : on utilise bien getLength() pour ne lire que les octets utiles
-            // et pas tout le buffer de 1024 cases.
             String message = new String(paquetRecu.getData(), 0, paquetRecu.getLength());
 
-            // --- ETAPE 2 : LOGIQUE METIER ---
-            // On attend le format "login;password"
-            String[] morceaux = message.split(";");
-            String reponseStr = CmdServ.BAD.name(); // Par défaut on dit non
+            // On découpe le message en 3 différents morceaux
+            // Morceaux 1 : Commande Serveur
+            // Morceaux 2 : login
+            // Morceaux 3 : mdp
+            String[] morceaux = message.split(" ");
 
-            if (morceaux.length == 2) {
-                String login = morceaux[0];
-                String passwd = morceaux[1];
+            String reponseStr;
 
-                if (listeAuth.tester(login, passwd)) {
+            // On vérifie que :
+            // - Le nombre d'arguments' est égale à 3
+            // - la commande est bien égale à CHK
+            if (morceaux.length == 3 && morceaux[0].equals("CHK")) {
+                String login = morceaux[1];
+                String mdp = morceaux[2];
+
+                // Vérification du couple login / mdp
+                if (listeAuth.tester(login, mdp)) {
                     reponseStr = CmdServ.GOOD.name();
+                } else {
+                    reponseStr = CmdServ.BAD.name();
                 }
+            } else {
+                reponseStr = CmdServ.ERROR.name();
             }
 
-            // --- ETAPE 3 : PREPARATION DE LA REPONSE ---
-            // On récupère l'adresse et le port de l'expéditeur (le client)
-            // C'est indispensable en UDP car il n'y a pas de connexion permanente
+            // Préparation de la réponse
             InetAddress adresseClient = paquetRecu.getAddress();
             int portClient = paquetRecu.getPort();
-
-            // Conversion en octets
             byte[] dataReponse = reponseStr.getBytes();
 
-            // Construction du paquet réponse
             DatagramPacket paquetReponse = new DatagramPacket(
                     dataReponse,
                     dataReponse.length,
@@ -56,11 +59,12 @@ public class ServiceCheckerUDP {
                     portClient
             );
 
-            // --- ETAPE 4 : ENVOI ---
             socket.send(paquetReponse);
-            System.out.println("[UDP] Réponse " + reponseStr + " envoyée à " + adresseClient);
+            // historique du serveur des messages reçus avec la réponse asssociée
+            System.out.println("[UDP] Reçu : " + paquetReponse + " -> Réponse : " + reponseStr);
 
         } catch (IOException e) {
+            // Message console client
             System.out.println(CmdServ.ERROR.name() + " Service UDP : " + e.getMessage());
         }
     }

@@ -25,6 +25,8 @@ public class ListeAuth {
         authEntries.put("Titi", "Titi");
         authEntries.put("Tata", "Tata");
         authEntries.put("Tutu", "Tutu");
+        authEntries.put("oli", "via");
+        authEntries.put("mat", "his");
     }
 
     /**

@@ -2,7 +2,7 @@ package clients.checker;
 
 import java.net.*;
 import java.util.Scanner;
-import cmd.CmdServ; // Import de l'enum pour comparer
+import cmd.CmdServ;
 
 public class ClientCheckerUDP {
 
@@ -16,14 +16,9 @@ public class ClientCheckerUDP {
         try {
             DatagramSocket socket = new DatagramSocket();
 
-            System.out.print("Login : ");
-            String login = sc.nextLine();
-            System.out.print("Password : ");
-            String pass = sc.nextLine();
+            System.out.println(" // 1 - Client -> Serveur ");
+            String message = sc.nextLine();
 
-            // Concaténation du login et du password avec un ';' pour effectuer
-            // La séparation dans la classe ServerCheckerUDP
-            String message = login + ";" + pass;
             byte[] data = message.getBytes();
 
             // Envoi du paquet
