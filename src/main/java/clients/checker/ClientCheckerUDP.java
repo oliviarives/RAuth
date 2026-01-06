@@ -1,4 +1,4 @@
-package clients;
+package clients.checker;
 
 import java.net.*;
 import java.util.Scanner;

@@ -1,6 +1,5 @@
-package clients;
+package clients.checker;
 
-import cmd.CmdClient;
 import cmd.CmdServ;
 
 import java.io.*;
