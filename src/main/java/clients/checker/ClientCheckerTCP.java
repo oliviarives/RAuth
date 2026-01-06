@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class ClientCheckerTCP {
 
-    private static final String ROLE = "ClientChecker"; // utile pour réutiliser le même style plus tard
+    private static final String ROLE = "ClientChecker";
 
     public static void main(String[] args) {
         String hote = "localhost";
@@ -17,11 +17,11 @@ public class ClientCheckerTCP {
         try (Scanner sc = new Scanner(System.in)) {
             System.out.println("--- " + ROLE + " TCP ---");
 
-            // 1) Affichage AVANT la saisie
-            System.out.println("// 1 - " + ROLE + " -> ServeurAS");
+            // Affichage avant la saisie
+            System.out.println("// 1 - Client -> Serveur ");
 
-            // 2) Saisie "formulaire"
-            System.out.print("Commande (ex: CHK) : ");
+            // Saisie
+            System.out.print("Commande : ");
             String cmd = sc.nextLine();
 
             System.out.print("Login : ");
@@ -30,7 +30,7 @@ public class ClientCheckerTCP {
             System.out.print("Password : ");
             String password = sc.nextLine();
 
-            // 3) Connexion + envoi
+            // Connexion + envoi
             try (Socket socket = new Socket(hote, port);
                  PrintStream out = new PrintStream(socket.getOutputStream());
                  BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
@@ -39,11 +39,11 @@ public class ClientCheckerTCP {
                 out.println(login);
                 out.println(password);
 
-                // 4) Réception + affichage
+                // Réception + affichage
                 String reponse = in.readLine();
 
-                System.out.println("// 2 - ServeurAS -> " + ROLE);
-                System.out.println(reponse); // UNIQUEMENT GOOD / BAD / ERROR
+                System.out.println("// 2- Serveur -> Client ");
+                System.out.println(reponse); // GOOD / BAD / ERROR
             }
 
         } catch (Exception e) {

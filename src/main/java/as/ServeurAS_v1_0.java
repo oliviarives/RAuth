@@ -62,7 +62,7 @@ public class ServeurAS_v1_0 {
         try (DatagramSocket udp = sockEcoute) {
             System.out.println("[UDP] Serveur prêt");
 
-            // Instancier une fois (meilleur que recréer à chaque paquet)
+            // Instancier une fois
             ServiceCheckerUDP service = new ServiceCheckerUDP(udp, listeAuth);
 
             byte[] buffer = new byte[256];
