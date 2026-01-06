@@ -1,48 +1,53 @@
 package clients.checker;
 
-import cmd.CmdServ;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.net.Socket;
 import java.util.Scanner;
 
 public class ClientCheckerTCP {
 
+    private static final String ROLE = "ClientChecker"; // utile pour réutiliser le même style plus tard
+
     public static void main(String[] args) {
-        // Configuration
         String hote = "localhost";
-        int port = 28414; // Le même port que le serveur
+        int port = 28414;
 
-        Scanner sc = new Scanner(System.in);
+        try (Scanner sc = new Scanner(System.in)) {
+            System.out.println("--- " + ROLE + " TCP ---");
 
-        try {
-            System.out.println("--- Client TCP Checker ---");
+            // 1) Affichage AVANT la saisie
+            System.out.println("// 1 - " + ROLE + " -> ServeurAS");
+
+            // 2) Saisie "formulaire"
+            System.out.print("Commande (ex: CHK) : ");
+            String cmd = sc.nextLine();
+
             System.out.print("Login : ");
             String login = sc.nextLine();
 
             System.out.print("Password : ");
-            String pass = sc.nextLine();
+            String password = sc.nextLine();
 
-            // Connexion
-            Socket sock = new Socket(hote, port);
+            // 3) Connexion + envoi
+            try (Socket socket = new Socket(hote, port);
+                 PrintStream out = new PrintStream(socket.getOutputStream());
+                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
 
-            // Flux
-            PrintStream out = new PrintStream(sock.getOutputStream());
-            BufferedReader in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+                out.println(cmd);
+                out.println(login);
+                out.println(password);
 
-            // Envoi avec le protocole du serveur
-            out.println(login);
-            out.println(pass);
+                // 4) Réception + affichage
+                String reponse = in.readLine();
 
-            // Réception
-            String reponse = in.readLine();
-            System.out.println("Réponse du serveur : " + reponse);
+                System.out.println("// 2 - ServeurAS -> " + ROLE);
+                System.out.println(reponse); // UNIQUEMENT GOOD / BAD / ERROR
+            }
 
-            // Fermeture de la connexion
-            sock.close();
-
-        } catch (IOException e) {
-            System.out.println(CmdServ.BAD.name() + " client : " + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
