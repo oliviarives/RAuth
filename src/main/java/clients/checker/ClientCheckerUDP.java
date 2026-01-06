@@ -16,7 +16,7 @@ public class ClientCheckerUDP {
         try {
             DatagramSocket socket = new DatagramSocket();
 
-            System.out.println(" // 1 - Client -> Serveur ");
+            System.out.println("// 1 - Client -> Serveur ");
             String message = sc.nextLine();
 
             byte[] data = message.getBytes();
@@ -27,7 +27,7 @@ public class ClientCheckerUDP {
             socket.send(paquetEnvoi);
 
             // Attente de la réponse
-            byte[] bufferReponse = new byte[1024];
+            byte[] bufferReponse = new byte[256];
             DatagramPacket paquetRecu = new DatagramPacket(bufferReponse, bufferReponse.length);
 
             socket.receive(paquetRecu);
@@ -35,10 +35,11 @@ public class ClientCheckerUDP {
             // Analyse de la réponse
             String reponseTexte = new String(paquetRecu.getData(), 0, paquetRecu.getLength());
 
+            System.out.println("// 2- Serveur -> Client ");
             if (CmdServ.GOOD.name().equals(reponseTexte)) {
-                System.out.println("SERVEUR UDP : " + CmdServ.GOOD.name());
+                System.out.println(CmdServ.GOOD.name());
             } else {
-                System.out.println("SERVEUR UDP : "+ CmdServ.BAD.name());
+                System.out.println(CmdServ.BAD.name());
             }
 
             socket.close();
