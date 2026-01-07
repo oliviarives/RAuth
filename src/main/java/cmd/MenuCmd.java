@@ -18,6 +18,7 @@ public class MenuCmd {
         System.out.println("+----------------------------+");
 
         choix = sc.nextInt();
+
         sc.nextLine();
 
         return "";
