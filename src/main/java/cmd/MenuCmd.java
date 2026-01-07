@@ -1,12 +1,13 @@
 package cmd;
 
-import as.ListeAuth;
-
 import java.util.Scanner;
 
-public class menuCmd {
+public class MenuCmd {
+
 
     public String menuServeur () {
+        Scanner sc = new Scanner(System.in);
+        String choix = "QUIT";
 
         System.out.println("+----------------------------+");
         System.out.println("| CHK  - Checker une paire   |");
@@ -16,5 +17,9 @@ public class menuCmd {
         System.out.println("| QUIT - Quitter             |");
         System.out.println("+----------------------------+");
 
+        choix = sc.nextInt();
+        sc.nextLine();
+
+        return "";
     }
 }
