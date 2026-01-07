@@ -61,7 +61,7 @@ public class ServiceCheckerUDP {
 
             socket.send(paquetReponse);
             // historique du serveur des messages reçus avec la réponse asssociée
-            System.out.println("[UDP] Reçu : " + paquetReponse + " -> Réponse : " + reponseStr);
+            System.out.println("[UDP] Reçu : " + message + " -> Réponse : " + reponseStr);
 
         } catch (IOException e) {
             // Message console client

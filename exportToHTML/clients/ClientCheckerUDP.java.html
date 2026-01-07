@@ -1,0 +1,77 @@
+<html>
+<head>
+<title>ClientCheckerUDP.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #7a7e85;}
+.s4 { color: #6aab73;}
+.s5 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#191a1c">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+ClientCheckerUDP.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">clients</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">net</span><span class="s2">.*;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">Scanner</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">cmd</span><span class="s2">.</span><span class="s1">CmdServ</span><span class="s2">; </span><span class="s3">// Import de l'enum pour comparer</span>
+
+<span class="s0">public class </span><span class="s1">ClientCheckerUDP </span><span class="s2">{</span>
+
+    <span class="s0">public static void </span><span class="s1">main</span><span class="s2">(</span><span class="s1">String</span><span class="s2">[] </span><span class="s1">args</span><span class="s2">) {</span>
+        <span class="s1">String hote </span><span class="s2">= </span><span class="s4">&quot;localhost&quot;</span><span class="s2">;</span>
+        <span class="s0">int </span><span class="s1">port </span><span class="s2">= </span><span class="s5">28414</span><span class="s2">;</span>
+        <span class="s1">Scanner sc </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Scanner</span><span class="s2">(</span><span class="s1">System</span><span class="s2">.</span><span class="s1">in</span><span class="s2">);</span>
+
+        <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s4">&quot;--- Client UDP Checker ---&quot;</span><span class="s2">);</span>
+
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s1">DatagramSocket socket </span><span class="s2">= </span><span class="s0">new </span><span class="s1">DatagramSocket</span><span class="s2">(); </span><span class="s3">// Pas de port précis pour le client</span>
+
+            <span class="s3">// 1. Saisie</span>
+            <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">print</span><span class="s2">(</span><span class="s4">&quot;Login : &quot;</span><span class="s2">);</span>
+            <span class="s1">String login </span><span class="s2">= </span><span class="s1">sc</span><span class="s2">.</span><span class="s1">nextLine</span><span class="s2">();</span>
+            <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">print</span><span class="s2">(</span><span class="s4">&quot;Password : &quot;</span><span class="s2">);</span>
+            <span class="s1">String pass </span><span class="s2">= </span><span class="s1">sc</span><span class="s2">.</span><span class="s1">nextLine</span><span class="s2">();</span>
+
+            <span class="s3">// 2. Construction du message &quot;login;password&quot;</span>
+            <span class="s1">String message </span><span class="s2">= </span><span class="s1">login </span><span class="s2">+ </span><span class="s4">&quot;;&quot; </span><span class="s2">+ </span><span class="s1">pass</span><span class="s2">;</span>
+            <span class="s0">byte</span><span class="s2">[] </span><span class="s1">data </span><span class="s2">= </span><span class="s1">message</span><span class="s2">.</span><span class="s1">getBytes</span><span class="s2">();</span>
+
+            <span class="s3">// 3. Envoi du paquet</span>
+            <span class="s1">InetAddress adresseServeur </span><span class="s2">= </span><span class="s1">InetAddress</span><span class="s2">.</span><span class="s1">getByName</span><span class="s2">(</span><span class="s1">hote</span><span class="s2">);</span>
+            <span class="s1">DatagramPacket paquetEnvoi </span><span class="s2">= </span><span class="s0">new </span><span class="s1">DatagramPacket</span><span class="s2">(</span><span class="s1">data</span><span class="s2">, </span><span class="s1">data</span><span class="s2">.</span><span class="s1">length</span><span class="s2">, </span><span class="s1">adresseServeur</span><span class="s2">, </span><span class="s1">port</span><span class="s2">);</span>
+            <span class="s1">socket</span><span class="s2">.</span><span class="s1">send</span><span class="s2">(</span><span class="s1">paquetEnvoi</span><span class="s2">);</span>
+
+            <span class="s3">// 4. Attente de la réponse</span>
+            <span class="s0">byte</span><span class="s2">[] </span><span class="s1">bufferReponse </span><span class="s2">= </span><span class="s0">new byte</span><span class="s2">[</span><span class="s5">1024</span><span class="s2">];</span>
+            <span class="s1">DatagramPacket paquetRecu </span><span class="s2">= </span><span class="s0">new </span><span class="s1">DatagramPacket</span><span class="s2">(</span><span class="s1">bufferReponse</span><span class="s2">, </span><span class="s1">bufferReponse</span><span class="s2">.</span><span class="s1">length</span><span class="s2">);</span>
+
+            <span class="s1">socket</span><span class="s2">.</span><span class="s1">receive</span><span class="s2">(</span><span class="s1">paquetRecu</span><span class="s2">); </span><span class="s3">// Bloquant</span>
+
+            <span class="s3">// 5. Analyse de la réponse</span>
+            <span class="s1">String reponseTexte </span><span class="s2">= </span><span class="s0">new </span><span class="s1">String</span><span class="s2">(</span><span class="s1">paquetRecu</span><span class="s2">.</span><span class="s1">getData</span><span class="s2">(), </span><span class="s5">0</span><span class="s2">, </span><span class="s1">paquetRecu</span><span class="s2">.</span><span class="s1">getLength</span><span class="s2">());</span>
+
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">CmdServ</span><span class="s2">.</span><span class="s1">GOOD</span><span class="s2">.</span><span class="s1">name</span><span class="s2">().</span><span class="s1">equals</span><span class="s2">(</span><span class="s1">reponseTexte</span><span class="s2">)) {</span>
+                <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s4">&quot;SERVEUR : Authentification RÉUSSIE !&quot;</span><span class="s2">);</span>
+            <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s4">&quot;SERVEUR : Échec (ou erreur).&quot;</span><span class="s2">);</span>
+            <span class="s2">}</span>
+
+            <span class="s1">socket</span><span class="s2">.</span><span class="s1">close</span><span class="s2">();</span>
+            <span class="s1">sc</span><span class="s2">.</span><span class="s1">close</span><span class="s2">();</span>
+
+        <span class="s2">} </span><span class="s0">catch </span><span class="s2">(</span><span class="s1">Exception e</span><span class="s2">) {</span>
+            <span class="s1">e</span><span class="s2">.</span><span class="s1">printStackTrace</span><span class="s2">();</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span></pre>
+</body>
+</html>

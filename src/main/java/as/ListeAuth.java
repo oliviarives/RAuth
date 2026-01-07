@@ -30,6 +30,16 @@ public class ListeAuth {
     }
 
     /**
+     * ajout de notre part pour vérifier qu'un login existe déjà
+     */
+
+    public synchronized boolean existe(String login) {
+        return authEntries.containsKey(login);
+    }
+
+
+
+    /**
      * création d'un couple (login, mot de passe)
      * @param login : le login
      * @param passwd : le mot de passe

@@ -1,26 +1,19 @@
 package cmd;
 
-import java.util.Scanner;
+public final class MenuCmd {
 
-public class MenuCmd {
+    // Constructeur privé : classe utilitaire
+    private MenuCmd() {}
 
-
-    public String menuServeur () {
-        Scanner sc = new Scanner(System.in);
-        String choix = "QUIT";
-
+    public static void afficherMenuManager() {
         System.out.println("+----------------------------+");
         System.out.println("| CHK  - Checker une paire   |");
         System.out.println("| ADD  - Ajouter une paire   |");
         System.out.println("| DEL  - Supprimer une paire |");
         System.out.println("| MOD  - Modifier une paire  |");
+        System.out.println("| HELP - Afficher le menu    |");
         System.out.println("| QUIT - Quitter             |");
         System.out.println("+----------------------------+");
-
-        choix = sc.nextInt();
-
-        sc.nextLine();
-
-        return "";
+        System.out.println();
     }
 }
