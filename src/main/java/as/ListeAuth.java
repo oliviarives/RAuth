@@ -39,7 +39,7 @@ public class ListeAuth {
         if(authEntries.containsKey(login))
             return false; // le login est déjà présent
         authEntries.put(login, passwd); // on l'ajoute
-        return true; // Ça c'est bien passÃ©
+        return true; // Ça c'est bien passé
     }
 
     /**
