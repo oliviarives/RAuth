@@ -1,49 +1,61 @@
 package clients.checker;
 
-import java.net.*;
-import java.util.Scanner;
 import cmd.CmdServ;
+import logs.JsonLogger; // Q9 (optionnel)
+
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.util.Scanner;
 
 public class ClientCheckerUDP {
 
+    private static final String ROLE = "ClientChecker";
+    private static final String HOTE = "localhost";
+    private static final int PORT = 28414;
+
     public static void main(String[] args) {
-        String hote = "localhost";
-        int port = 28414;
-        Scanner sc = new Scanner(System.in);
+        try (Scanner sc = new Scanner(System.in);
+             DatagramSocket socket = new DatagramSocket()) {
 
-        System.out.println("--- Client UDP Checker ---");
+            System.out.println("--- " + ROLE + " UDP ---");
 
-        try {
-            DatagramSocket socket = new DatagramSocket();
+            // Affichage avant saisie
+            System.out.println("// 1 - " + ROLE + " -> ServeurAS");
+            System.out.println("Format attendu: CHK <login> <password>");
+            System.out.print("> ");
 
-            System.out.println("// 1 - Client -> Serveur ");
-            String message = sc.nextLine();
+            // On garde votre logique : 1 datagramme = cmd + login + password
+            String message = sc.nextLine().trim();
 
             byte[] data = message.getBytes();
 
-            // Envoi du paquet
-            InetAddress adresseServeur = InetAddress.getByName(hote);
-            DatagramPacket paquetEnvoi = new DatagramPacket(data, data.length, adresseServeur, port);
+            InetAddress adresseServeur = InetAddress.getByName(HOTE);
+            DatagramPacket paquetEnvoi = new DatagramPacket(data, data.length, adresseServeur, PORT);
             socket.send(paquetEnvoi);
 
-            // Attente de la réponse
+            // Réception de la réponse
             byte[] bufferReponse = new byte[256];
             DatagramPacket paquetRecu = new DatagramPacket(bufferReponse, bufferReponse.length);
-
             socket.receive(paquetRecu);
 
-            // Analyse de la réponse
-            String reponseTexte = new String(paquetRecu.getData(), 0, paquetRecu.getLength());
+            String reponseTexte = new String(paquetRecu.getData(), 0, paquetRecu.getLength()).trim();
 
-            System.out.println("// 2- Serveur -> Client ");
-            if (CmdServ.GOOD.name().equals(reponseTexte)) {
-                System.out.println(CmdServ.GOOD.name());
-            } else {
-                System.out.println(CmdServ.BAD.name());
-            }
+            System.out.println("// 2 - ServeurAS -> " + ROLE);
+            // On affiche la réponse serveur telle quelle (GOOD/BAD/ERROR...)
+            System.out.println(reponseTexte);
 
-            socket.close();
-            sc.close();
+            // =========================
+            // Q9 (optionnel) : log côté client (ne change rien au protocole)
+            // =========================
+            try {
+                // On essaye de récupérer cmd/login sans imposer quoi que ce soit
+                String[] parts = message.replaceAll("\\s+", " ").split(" ");
+                String type = (parts.length >= 1) ? parts[0].toUpperCase() : "CHK";
+                String login = (parts.length >= 2) ? parts[1] : "-";
+
+                JsonLogger.log("localhost", 0, "UDP", type, login, reponseTexte);
+            } catch (Exception ignored) {}
 
         } catch (Exception e) {
             e.printStackTrace();

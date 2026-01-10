@@ -1,6 +1,7 @@
 package clients.manager;
 
 import cmd.MenuCmd;
+import logs.JsonLogger; // Q9
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -27,9 +28,7 @@ public class ClientManagerTCP {
             MenuCmd.afficherMenuManager();
 
             while (true) {
-                // Affichage interaction AVANT saisie
                 System.out.println("// 1 - " + ROLE + " -> ServeurAS");
-
                 System.out.print("Commande : ");
                 String cmd = sc.nextLine().trim();
 
@@ -37,88 +36,87 @@ public class ClientManagerTCP {
                     System.out.println();
                     continue;
                 }
-
                 if ("HELP".equalsIgnoreCase(cmd)) {
                     System.out.println();
                     MenuCmd.afficherMenuManager();
                     continue;
                 }
-
                 if ("QUIT".equalsIgnoreCase(cmd)) {
                     System.out.println("Fin " + ROLE + ".");
                     return;
                 }
 
-                // 1) Envoi CMD
+                // Envoi CMD
                 out.println(cmd);
 
-                // 2) Réponse serveur : ASK_LOGIN ou ERROR ...
-                String rep1 = in.readLine();
-                if (rep1 == null) {
-                    System.out.println("Connexion fermée par le serveur.");
-                    return;
-                }
+                String rep1 = in.readLine(); // ASK_LOGIN ou ERROR ...
+                if (rep1 == null) return;
 
                 if (rep1.startsWith("ERROR")) {
                     System.out.println("// 2 - ServeurAS -> " + ROLE);
                     System.out.println(rep1);
                     System.out.println();
+
+                    // Q9 (optionnel) : log côté client (pas de login)
+                    try { JsonLogger.log("localhost", 0, "TCP", cmd.toUpperCase(), "-", rep1); } catch (Exception ignored) {}
                     continue;
                 }
 
                 if (!"ASK_LOGIN".equalsIgnoreCase(rep1.trim())) {
+                    String err = "ERROR protocole inattendu (attendu ASK_LOGIN, reçu: " + rep1 + ")";
                     System.out.println("// 2 - ServeurAS -> " + ROLE);
-                    System.out.println("ERROR protocole inattendu (attendu ASK_LOGIN, reçu: " + rep1 + ")");
+                    System.out.println(err);
                     System.out.println();
+                    try { JsonLogger.log("localhost", 0, "TCP", cmd.toUpperCase(), "-", err); } catch (Exception ignored) {}
                     continue;
                 }
 
-                // Saisie login
                 System.out.print("Login : ");
-                String login = sc.nextLine();
+                String login = sc.nextLine().trim();
                 out.println(login);
 
-                // Réponse serveur : ASK_PASSWORD ou ERROR ...
-                String rep2 = in.readLine();
-                if (rep2 == null) {
-                    System.out.println("Connexion fermée par le serveur.");
-                    return;
-                }
+                String rep2 = in.readLine(); // ASK_PASSWORD ou ERROR ...
+                if (rep2 == null) return;
 
                 if (rep2.startsWith("ERROR")) {
                     System.out.println("// 2 - ServeurAS -> " + ROLE);
                     System.out.println(rep2);
                     System.out.println();
+
+                    // Q9 (optionnel)
+                    try { JsonLogger.log("localhost", 0, "TCP", cmd.toUpperCase(), login, rep2); } catch (Exception ignored) {}
                     continue;
                 }
 
                 if (!"ASK_PASSWORD".equalsIgnoreCase(rep2.trim())) {
+                    String err = "ERROR protocole inattendu (attendu ASK_PASSWORD, reçu: " + rep2 + ")";
                     System.out.println("// 2 - ServeurAS -> " + ROLE);
-                    System.out.println("ERROR protocole inattendu (attendu ASK_PASSWORD, reçu: " + rep2 + ")");
+                    System.out.println(err);
                     System.out.println();
+                    try { JsonLogger.log("localhost", 0, "TCP", cmd.toUpperCase(), login, err); } catch (Exception ignored) {}
                     continue;
                 }
 
-                // Saisie password (ou newPassword si MOD)
                 System.out.print("Password (newPassword si MOD) : ");
                 String password = sc.nextLine();
                 out.println(password);
 
-                // Réponse finale du serveur : GOOD/BAD/DONE/ERROR...
-                String repFinale = in.readLine();
-                if (repFinale == null) {
-                    System.out.println("Connexion fermée par le serveur.");
-                    return;
-                }
+                String repFinale = in.readLine(); // GOOD/BAD/DONE/ERROR...
+                if (repFinale == null) return;
 
                 System.out.println("// 2 - ServeurAS -> " + ROLE);
                 System.out.println(repFinale);
                 System.out.println();
 
+                // =========================
+                // Q9 (optionnel) : log côté client (n'affecte pas le protocole)
+                // =========================
+                try {
+                    JsonLogger.log("localhost", 0, "TCP", cmd.toUpperCase(), login, repFinale);
+                } catch (Exception ignored) {}
             }
 
         } catch (Exception e) {
-            System.out.println("Erreur " + ROLE + " : " + e.getMessage());
             e.printStackTrace();
         }
     }
